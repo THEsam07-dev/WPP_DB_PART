@@ -130,3 +130,34 @@ DepartmentId	EmployeeCount	AvgSalary	TotalSalary
 2	3	57000.000000	171000.00
 3	2	44000.000000	88000.00
 
+## Task 07 — GROUP BY + HAVING: фильтрация групп
+
+### SQL
+```sql
+SELECT DepartmentId, COUNT(*) AS EmployeeCount
+FROM Employees
+GROUP BY DepartmentId
+HAVING COUNT(*) > 2;
+-- отделы с 2+ людьми
+DepartmentId	EmployeeCount
+1	4
+2	3
+
+SELECT DepartmentId, ROUND(AVG(Salary), 2) AS AvgSalary
+FROM Employees
+GROUP BY DepartmentId
+HAVING AVG(Salary) > 55000;
+-- отделы с ср. зп. > 55000
+DepartmentId	AvgSalary
+1	60000.000000
+2	57000.000000
+4	90000.000000
+
+SELECT DepartmentId, SUM(Salary) AS TotalSalary
+FROM Employees
+GROUP BY DepartmentId
+HAVING SUM(Salary) > 150000;
+-- отделы с сумм. зп 150000
+DepartmentId	TotalSalary
+1	240000.00
+2	171000.00
