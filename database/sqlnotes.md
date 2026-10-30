@@ -45,21 +45,20 @@ EmployeeId	EmployeeName	Salary	HireDate	DepartmentId	ManagerId
 ## Task 04 — ORDER BY + TOP
 
 ### SQL
--- сорт. сотрудников по зарплате -
+
 SELECT TOP 3 EmployeeName, Salary
 FROM Employees
 ORDER BY Salary DESC;
-
+-- сорт. сотрудников по зарплате -
 EmployeeName	Salary
 Алексей Лебедев	90000.00
 Пётр Сидоров	72000.00
 Анна Иванова	65000.00
 
--- топ5сторожил
 SELECT TOP 5 EmployeeName, HireDate
 FROM Employees
 ORDER BY HireDate ASC;
-
+-- топ5сторожил
 EmployeeName	HireDate
 Алексей Лебедев	2018-05-25
 Пётр Сидоров	2019-07-01
@@ -67,11 +66,10 @@ EmployeeName	HireDate
 Ольга Смирнова	2020-09-05
 Мария Кузнецова	2021-11-20
 
--- сорт. по отделу + зп
 SELECT EmployeeName, DepartmentId, Salary
 FROM Employees
 ORDER BY DepartmentId ASC, Salary DESC;
-
+-- сорт. по отделу + зп
 EmployeeName	DepartmentId	Salary
 Пётр Сидоров	1	72000.00
 Анна Иванова	1	65000.00
@@ -83,3 +81,32 @@ EmployeeName	DepartmentId	Salary
 Сергей Морозов	3	45000.00
 Наталья Соколова	3	43000.00
 Алексей Лебедев	4	90000.00
+
+## Task 05 — COUNT, SUM, AVG, MIN и MAX
+
+### SQL
+
+SELECT COUNT(*) AS TotalEmployees FROM Employees;
+-- кол-во сотр.
+TotalEmployees
+10
+
+SELECT SUM(Salary) AS TotalSalary FROM Employees;
+-- все зп
+TotalSalary
+589000.00
+
+SELECT ROUND(AVG(Salary), 2) AS AvgSalary FROM Employees;
+-- сред зп 2 зн.
+AvgSalary
+58900.000000
+
+SELECT MIN(Salary) AS MinSalary, MAX(Salary) AS MaxSalary FROM Employees;
+-- мин и мак зп
+MinSalary	MaxSalary
+43000.00	90000.00
+
+SELECT COUNT(*) AS HighPaidCount FROM Employees WHERE Salary > 50000;
+-- кол-во сотр. с зп > 50к
+HighPaidCount
+7
