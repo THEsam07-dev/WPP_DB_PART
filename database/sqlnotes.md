@@ -161,3 +161,27 @@ HAVING SUM(Salary) > 150000;
 DepartmentId	TotalSalary
 1	240000.00
 2	171000.00
+
+## Task 08 — INNER JOIN: сотрудники и отделы
+
+### SQL
+```sql
+SELECT 
+    e.EmployeeName, 
+    d.DepartmentName, 
+    e.Salary
+FROM Employees e
+INNER JOIN Departments d ON e.DepartmentId = d.DepartmentId
+ORDER BY d.DepartmentName ASC, e.Salary DESC;
+-- сотрудники + отделы
+EmployeeName	DepartmentName	Salary
+Ольга Смирнова	Аналитика	61000.00
+Дмитрий Орлов	Аналитика	58000.00
+Елена Волкова	Аналитика	52000.00
+Алексей Лебедев	Менеджмент	90000.00
+Пётр Сидоров	Разработка	72000.00
+Анна Иванова	Разработка	65000.00
+Мария Кузнецова	Разработка	55000.00
+Иван Петров	Разработка	48000.00
+Сергей Морозов	Тестирование	45000.00
+Наталья Соколова	Тестирование	43000.00
