@@ -509,3 +509,86 @@ SELECT EmployeeName, Salary FROM Employees WHERE EmployeeId = 2;
 -- после отката
 EmployeeName	Salary
 Пётр Сидоров	84200.00
+
+--18.2
+BEGIN TRANSACTION;
+-- начало
+
+UPDATE Employees SET Salary = 100000 WHERE EmployeeId = 2;
+-- смена зп
+
+COMMIT TRANSACTION;
+-- сохр изменения
+
+SELECT EmployeeName, Salary FROM Employees WHERE EmployeeId = 2;
+-- проверка
+EmployeeName	Salary
+Пётр Сидоров	100000.00
+
+## Task 19. Представления (VIEW)
+
+### SQL
+```sql
+CREATE VIEW vw_EmployeeDetails AS
+SELECT 
+    e.EmployeeName, 
+    d.DepartmentName, 
+    p.ProjectName, 
+    ep.Hours
+FROM Employees e
+INNER JOIN Departments d ON d.DepartmentId = e.DepartmentId
+INNER JOIN EmployeeProjects ep ON ep.EmployeeId = e.EmployeeId
+INNER JOIN Projects p ON p.ProjectId = ep.ProjectId;
+GO
+-- создние представления
+
+SELECT * FROM vw_EmployeeDetails;
+GO
+-- проверка на работаспасобность
+EmployeeName	DepartmentName	ProjectName	Hours
+Анна Иванова	Разработка	CRM System	120
+Анна Иванова	Разработка	Data Warehouse	80
+Пётр Сидоров	Разработка	CRM System	150
+Пётр Сидоров	Разработка	AI Assistant	60
+Мария Кузнецова	Разработка	Mobile App	100
+Иван Петров	Разработка	Mobile App	90
+Иван Петров	Разработка	Legacy Refactor	40
+Ольга Смирнова	Аналитика	Data Warehouse	110
+Дмитрий Орлов	Аналитика	Data Warehouse	70
+Дмитрий Орлов	Аналитика	AI Assistant	50
+Елена Волкова	Аналитика	Mobile App	95
+Алексей Лебедев	Менеджмент	CRM System	30
+Алексей Лебедев	Менеджмент	AI Assistant	200
+
+DROP VIEW vw_EmployeeDetails;
+GO
+-- удаление представления
+
+## Task 20. Индексы: создание и анализ
+
+### SQL
+```sql
+--20.1
+SET STATISTICS IO ON;
+GO
+
+SELECT * FROM Employees WHERE DepartmentId = 1 AND Salary > 50000;
+GO
+
+--20.2
+CREATE INDEX IX_Employees_DepartmentId ON Employees(DepartmentId);
+CREATE INDEX IX_Employees_Salary ON Employees(Salary);
+GO
+
+--20.3
+SELECT * FROM Employees WHERE DepartmentId = 1 AND Salary > 50000;
+GO
+EmployeeId	EmployeeName	Salary	HireDate	DepartmentId	ManagerId
+1	Анна Иванова	76500.00	2023-05-01	1	NULL
+2	Пётр Сидоров	100000.00	2019-07-01	1	NULL
+3	Мария Кузнецова	65500.00	2021-11-20	1	2
+4	Иван Петров	52800.00	2023-02-10	1	1
+
+--20.4
+SET STATISTICS IO OFF;
+GO
