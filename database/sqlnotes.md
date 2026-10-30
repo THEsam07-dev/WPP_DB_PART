@@ -1,5 +1,10 @@
-## Task 03 — SELECT + WHERE
-
+## Task 1. Создание базы и таблиц
+### Вывод
+Я создал все 4 таблицы. Мне было непросто разобраться с самоссылающимся внешним ключом, но я сделал это с помощью constraint.
+## Task 2. INSERT: заполнение данными
+### Вывод
+Данные вставлены успешно. Порядок вставки понятен. FK — очень нужная вещь.
+## Task 3. SELECT + WHERE
 ### SQL
 ```sql
 SELECT * FROM Employees WHERE Salary > 50000;
@@ -41,9 +46,10 @@ EmployeeId	EmployeeName	Salary	HireDate	DepartmentId	ManagerId
 7	Елена Волкова	52000.00	2023-06-01	2	NULL
 8	Сергей Морозов	45000.00	2021-12-12	3	NULL
 9	Наталья Соколова	43000.00	2024-01-15	3	10
+### Вывод
+Запросы работают идеально. Чтобы юзать кириллицу через like, нужно ставить букву n перед строкой , иначе не судьба.
 
-## Task 04 — ORDER BY + TOP
-
+## Task 4. ORDER BY + TOP
 ### SQL
 ```sql
 SELECT TOP 3 EmployeeName, Salary
@@ -81,9 +87,10 @@ EmployeeName	DepartmentId	Salary
 Сергей Морозов	3	45000.00
 Наталья Соколова	3	43000.00
 Алексей Лебедев	4	90000.00
+### Вывод
+В целом всё гладко, легкий таск.
 
-## Task 05 — COUNT, SUM, AVG, MIN и MAX
-
+## Task 5. COUNT, SUM, AVG, MIN и MAX
 ### SQL
 ```sql
 SELECT COUNT(*) AS TotalEmployees FROM Employees;
@@ -110,9 +117,10 @@ SELECT COUNT(*) AS HighPaidCount FROM Employees WHERE Salary > 50000;
 -- кол-во сотр. с зп > 50к
 HighPaidCount
 7
+### Вывод
+Функции работают. Сложность минимальна.
 
-## Task 06 — GROUP BY: статистика по отделам
-
+## Task 6. GROUP BY: статистика по отделам
 ### SQL
 ```sql
 SELECT 
@@ -129,9 +137,10 @@ DepartmentId	EmployeeCount	AvgSalary	TotalSalary
 1	4	60000.000000	240000.00
 2	3	57000.000000	171000.00
 3	2	44000.000000	88000.00
+### Вывод
+Ничего особо отметить не могу, разве что связку group by + select - для выделения нужных колонок.
 
-## Task 07 — GROUP BY + HAVING: фильтрация групп
-
+## Task 7. GROUP BY + HAVING: фильтрация групп
 ### SQL
 ```sql
 SELECT DepartmentId, COUNT(*) AS EmployeeCount
@@ -161,9 +170,10 @@ HAVING SUM(Salary) > 150000;
 DepartmentId	TotalSalary
 1	240000.00
 2	171000.00
+### Вывод
+Всё превосходно. where — фильтр, having — группы данных.
 
-## Task 08 — INNER JOIN: сотрудники и отделы
-
+## Task 8. INNER JOIN: сотрудники и отделы
 ### SQL
 ```sql
 SELECT 
@@ -185,9 +195,10 @@ EmployeeName	DepartmentName	Salary
 Иван Петров	Разработка	48000.00
 Сергей Морозов	Тестирование	45000.00
 Наталья Соколова	Тестирование	43000.00
+### Вывод
+Таблицы объедены и все шикарно.
 
-## Task 09 — LEFT JOIN: сотрудники без проектов
-
+## Task 9. LEFT JOIN: сотрудники без проектов
 ### SQL
 ```sql
 SELECT 
@@ -199,9 +210,10 @@ WHERE ep.EmployeeId IS NULL;
 --белая ворона
 EmployeeId	EmployeeName
 9	Наталья Соколова
+### Вывод
+Хорошее задание на нахождение записи, у которых нет связи в другой таблице.
 
-## Task 10 — Множественный JOIN: сотрудники, отделы, проекты
-
+## Task 10. Множественный JOIN: сотрудники, отделы, проекты
 ### SQL
 ```sql
 SELECT 
@@ -230,9 +242,10 @@ EmployeeName	DepartmentName	ProjectName	Hours
 Пётр Сидоров	Разработка	AI Assistant	60
 Пётр Сидоров	Разработка	CRM System	150
 Сергей Морозов	Тестирование	Legacy Refactor	130
+### Вывод
+Я чуть не запутался в 4-х таблицах, но алиасы и on помогли мне.
 
 ## Task 11. Self-join: иерархия руководителей
-
 ### SQL
 ```sql
 SELECT 
@@ -252,9 +265,10 @@ EmployeeName	ManagerName
 Сергей Морозов	NULL
 Наталья Соколова	Алексей Лебедев
 Алексей Лебедев	NULL
+### Вывод
+Чтобы выполнить эту задачу, необходимо было соединить таблицу Employees саму с собой, используя разные алиасы для сотрудника и менеджера.
 
 ## Task 12. Подзапросы в WHERE
-
 ### SQL
 ```sql
 SELECT EmployeeName, Salary 
@@ -273,9 +287,10 @@ WHERE Salary = (SELECT MAX(Salary) FROM Employees);
 -- сотр. с макс зп
 EmployeeName	Salary
 Алексей Лебедев	90000.00
+### Вывод
+Сначала внутренний select, потом внешний.
 
 ## Task 13. Скалярные подзапросы в SELECT
-
 ### SQL
 ```sql
 SELECT 
@@ -296,9 +311,10 @@ EmployeeName	Salary	DepartmentId	DiffFromAvg
 Сергей Морозов	45000.00	3	1000.000000
 Наталья Соколова	43000.00	3	-1000.000000
 Алексей Лебедев	90000.00	4	0.000000
+### Вывод
+Скалярный подзапрос в select выполняется для каждой строки. 
 
 ## Task 14. EXISTS / NOT EXISTS
-
 ### SQL
 ```sql
 SELECT EmployeeName 
@@ -326,9 +342,10 @@ WHERE NOT EXISTS (
 -- сотр. без проектов
 EmployeeName
 Наталья Соколова
+### Вывод
+exists - альтернатива join, для проверки наличия записей, а сами данные не нужны.
 
 ## Task 15. UNION / UNION ALL
-
 ### SQL
 ```sql
 SELECT EmployeeName, Salary, HireDate FROM Employees WHERE Salary > 60000
@@ -358,9 +375,10 @@ EmployeeName	Salary	HireDate
 Ольга Смирнова	61000.00	2020-09-05
 Сергей Морозов	45000.00	2021-12-12
 Алексей Лебедев	90000.00	2018-05-25
+### Вывод
+union схлопывает дубликаты, а union all выводит всё подряд с повторами.
 
 ## Task 16. UPDATE: изменение данных
-
 ### SQL
 ```sql
 --16.1
@@ -426,9 +444,10 @@ SELECT EmployeeId, EmployeeName, HireDate FROM Employees WHERE EmployeeId = 1;
 -- после
 EmployeeId	EmployeeName	HireDate
 1	Анна Иванова	2023-05-01
+### Вывод
+update + мат операторы - идеально.
 
 ## Task 17. DELETE: удаление данных
-
 ### SQL
 ```sql
 --17.1
@@ -480,9 +499,10 @@ AfterDelete
 
 DROP TABLE #TestTable;
 -- удаляем тест. таб.
+### Вывод
+Теперь мне стало понятно, что важно удалять связанные данные. Я пытался удалить сотрудника, у которого есть проекты, а бд выдавала ошибку FK. Поэтому сначала пришлось удалять из EmployeeProjects.
 
 ## Task 18. Транзакции: BEGIN TRAN / COMMIT / ROLLBACK
-
 ### SQL
 ```sql
 --18.1
@@ -524,9 +544,10 @@ SELECT EmployeeName, Salary FROM Employees WHERE EmployeeId = 2;
 -- проверка
 EmployeeName	Salary
 Пётр Сидоров	100000.00
+### Вывод
+Транзакции — мощь, rollback отменяет всё, возвращая исходные данные, commit сохраняет навсегда.
 
 ## Task 19. Представления (VIEW)
-
 ### SQL
 ```sql
 CREATE VIEW vw_EmployeeDetails AS
@@ -563,9 +584,10 @@ EmployeeName	DepartmentName	ProjectName	Hours
 DROP VIEW vw_EmployeeDetails;
 GO
 -- удаление представления
+### Вывод
+Представление сохраняет длинный join-запрос внутри себя. Работать очень удобно, а drop view удаляет.
 
 ## Task 20. Индексы: создание и анализ
-
 ### SQL
 ```sql
 --20.1
@@ -592,9 +614,10 @@ EmployeeId	EmployeeName	Salary	HireDate	DepartmentId	ManagerId
 --20.4
 SET STATISTICS IO OFF;
 GO
+### Вывод
+Было сложно. И я так и не понял, как показать скрины и информацию из statistics.io.
 
 ## Task 21. Хранимые процедуры
-
 ### SQL
 ```sql
 --21.1
@@ -626,7 +649,7 @@ END;
 GO
 -- OUTPUT-параметр
 
---22.2
+--21.2
 EXEC sp_GetEmployeesByDepartment @DeptId = 1;
 -- вызов 1ой
 EmployeeName	Salary	HireDate
@@ -641,9 +664,10 @@ SELECT @MyAvg AS AverageSalary_Dept1;
 -- вызов 2ой
 AverageSalary_Dept1
 73700.00
+### Вывод
+Хранимые процедуры чем-то похожи на функции в C#, очень удобно.
 
 ## Task 22. Функции: скалярная и табличная
-
 ### SQL
 ```sql
 DROP FUNCTION IF EXISTS fn_GetAnnualSalary;
@@ -695,9 +719,10 @@ EmployeeName	Salary
 Ольга Смирнова	66000.00
 Дмитрий Орлов	58000.00
 Елена Волкова	52000.00
+### Вывод
+Сложность в синтаксисе . Скалярная работает внутри select, а табличная  в from.
 
 ## Task 23. Оконные функции: ROW_NUMBER, RANK, DENSE_RANK
-
 ### SQL
 ```sql
 SELECT 
@@ -725,9 +750,10 @@ EmployeeName	DepartmentId	Salary	RowNum	Rnk	DenseRnk
 Елена Волкова	2	52000.00	8	3	3
 Наталья Соколова	3	43000.00	9	1	1
 Алексей Лебедев	4	95000.00	2	1	1
+### Вывод
+Увидел разницу между rank и dense rank: при одинаковой зп 1ый- пропускает в нумерацию, а 2ой по порядку.
 
 ## Task 24. Оконные агрегаты: SUM OVER, AVG OVER
-
 ### SQL
 ```sql
 SELECT 
@@ -754,9 +780,10 @@ EmployeeName	DepartmentId	Salary	DeptTotalSalary	DeptAvgSalary	DiffFromAvg
 Елена Волкова	2	52000.00	176000.00	58666.666666	-6666.670000
 Наталья Соколова	3	43000.00	43000.00	43000.000000	0.000000
 Алексей Лебедев	4	95000.00	95000.00	95000.000000	0.000000
+### Вывод
+Конструкция из таска позволяет выводить суммы и средние рядом с каждой строкой без group by.
 
 ## Task 25. CTE (Common Table Expressions)
-
 ### SQL
 ```sql
 WITH AvgSalary AS (
@@ -786,9 +813,10 @@ DepartmentName	AvgSalary
 Менеджмент	95000.000000
 Разработка	73700.000000
 Аналитика	58666.670000
+### Вывод
+cte делают запрос читаемее, и это великолепно. Сравнивая с 12ым небо и земля.
 
 ## Task 26. CASE: условная логика в SELECT
-
 ### SQL
 ```sql
 SELECT 
@@ -820,9 +848,10 @@ EmployeeName	Salary	SalaryLevel	HireDate	Tenure
 Елена Волкова	52000.00	Medium	2023-06-01	Junior
 Наталья Соколова	43000.00	Medium	2024-01-15	Junior
 Алексей Лебедев	95000.00	High	2018-05-25	Senior
+### Вывод
+case — это аналог if-else. Получилось создать колонки с категориями прямо в процессе select.
 
 ## Task 27. Работа с датами: DATEADD, DATEDIFF, FORMAT
-
 ### SQL
 ```sql
 SELECT 
@@ -851,8 +880,5 @@ EmployeeName	HireDate	YearsOfTenure	MonthsOfTenure	DateAfterOneYear	FormattedHir
 Елена Волкова	2023-06-01	3	40	2024-06-01	01.06.2023
 Наталья Соколова	2024-01-15	2	33	2025-01-15	15.01.2024
 Алексей Лебедев	2018-05-25	8	101	2019-05-25	25.05.2018
-
-## Task 28. C# + SQL: подключение и SELECT
-
-### SQL
-```sql
+### Вывод
+diff - великолепно посчитал стаж, а add - прибавил годы. format - сделал дату красивой , а я - закончил работу.
