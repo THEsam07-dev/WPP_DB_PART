@@ -230,3 +230,131 @@ EmployeeName	DepartmentName	ProjectName	Hours
 Пётр Сидоров	Разработка	AI Assistant	60
 Пётр Сидоров	Разработка	CRM System	150
 Сергей Морозов	Тестирование	Legacy Refactor	130
+
+## Task 11. Self-join: иерархия руководителей
+
+### SQL
+```sql
+SELECT 
+    e.EmployeeName, 
+    m.EmployeeName AS ManagerName
+FROM Employees e
+LEFT JOIN Employees m ON e.ManagerId = m.EmployeeId;
+--сотрудник+ руководитель
+EmployeeName	ManagerName
+Анна Иванова	NULL
+Пётр Сидоров	NULL
+Мария Кузнецова	Пётр Сидоров
+Иван Петров	Анна Иванова
+Ольга Смирнова	NULL
+Дмитрий Орлов	Ольга Смирнова
+Елена Волкова	NULL
+Сергей Морозов	NULL
+Наталья Соколова	Алексей Лебедев
+Алексей Лебедев	NULL
+
+## Task 12. Подзапросы в WHERE
+
+### SQL
+```sql
+SELECT EmployeeName, Salary 
+FROM Employees 
+WHERE Salary > (SELECT AVG(Salary) FROM Employees);
+-- сотр. с зп выше ср.
+EmployeeName	Salary
+Анна Иванова	65000.00
+Пётр Сидоров	72000.00
+Ольга Смирнова	61000.00
+Алексей Лебедев	90000.00
+
+SELECT EmployeeName, Salary 
+FROM Employees 
+WHERE Salary = (SELECT MAX(Salary) FROM Employees);
+-- сотр. с макс зп
+EmployeeName	Salary
+Алексей Лебедев	90000.00
+
+## Task 13. Скалярные подзапросы в SELECT
+
+### SQL
+```sql
+SELECT 
+    EmployeeName, 
+    Salary, 
+    DepartmentId,
+    ROUND(Salary - (SELECT AVG(Salary) FROM Employees e2 WHERE e2.DepartmentId = e.DepartmentId), 2) AS DiffFromAvg
+FROM Employees e;
+--откл от зп
+EmployeeName	Salary	DepartmentId	DiffFromAvg
+Анна Иванова	65000.00	1	5000.000000
+Пётр Сидоров	72000.00	1	12000.000000
+Мария Кузнецова	55000.00	1	-5000.000000
+Иван Петров	48000.00	1	-12000.000000
+Ольга Смирнова	61000.00	2	4000.000000
+Дмитрий Орлов	58000.00	2	1000.000000
+Елена Волкова	52000.00	2	-5000.000000
+Сергей Морозов	45000.00	3	1000.000000
+Наталья Соколова	43000.00	3	-1000.000000
+Алексей Лебедев	90000.00	4	0.000000
+
+## Task 14. EXISTS / NOT EXISTS
+
+### SQL
+```sql
+SELECT EmployeeName 
+FROM Employees e
+WHERE EXISTS (
+    SELECT 1 FROM EmployeeProjects ep WHERE ep.EmployeeId = e.EmployeeId
+);
+-- сотр. с проектами
+EmployeeName
+Анна Иванова
+Пётр Сидоров
+Мария Кузнецова
+Иван Петров
+Ольга Смирнова
+Дмитрий Орлов
+Елена Волкова
+Сергей Морозов
+Алексей Лебедев
+
+SELECT EmployeeName 
+FROM Employees e
+WHERE NOT EXISTS (
+    SELECT 1 FROM EmployeeProjects ep WHERE ep.EmployeeId = e.EmployeeId
+);
+-- сотр. без проектов
+EmployeeName
+Наталья Соколова
+
+## Task 14. EXISTS / NOT EXISTS
+
+### SQL
+```sql
+SELECT EmployeeName, Salary, HireDate FROM Employees WHERE Salary > 60000
+UNION
+SELECT EmployeeName, Salary, HireDate FROM Employees WHERE YEAR(HireDate) < 2022;
+-- UNION без дубликатов
+EmployeeName	Salary	HireDate
+Алексей Лебедев	90000.00	2018-05-25
+Анна Иванова	65000.00	2020-03-15
+Мария Кузнецова	55000.00	2021-11-20
+Ольга Смирнова	61000.00	2020-09-05
+Пётр Сидоров	72000.00	2019-07-01
+Сергей Морозов	45000.00	2021-12-12
+
+SELECT EmployeeName, Salary, HireDate FROM Employees WHERE Salary > 60000
+UNION ALL
+SELECT EmployeeName, Salary, HireDate FROM Employees WHERE YEAR(HireDate) < 2022;
+-- UNION ALL (с дубликатами)
+EmployeeName	Salary	HireDate
+Анна Иванова	65000.00	2020-03-15
+Пётр Сидоров	72000.00	2019-07-01
+Ольга Смирнова	61000.00	2020-09-05
+Алексей Лебедев	90000.00	2018-05-25
+Анна Иванова	65000.00	2020-03-15
+Пётр Сидоров	72000.00	2019-07-01
+Мария Кузнецова	55000.00	2021-11-20
+Ольга Смирнова	61000.00	2020-09-05
+Сергей Морозов	45000.00	2021-12-12
+Алексей Лебедев	90000.00	2018-05-25
