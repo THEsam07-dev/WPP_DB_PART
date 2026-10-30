@@ -41,3 +41,45 @@ EmployeeId	EmployeeName	Salary	HireDate	DepartmentId	ManagerId
 7	Елена Волкова	52000.00	2023-06-01	2	NULL
 8	Сергей Морозов	45000.00	2021-12-12	3	NULL
 9	Наталья Соколова	43000.00	2024-01-15	3	10
+
+## Task 04 — ORDER BY + TOP
+
+### SQL
+-- сорт. сотрудников по зарплате -
+SELECT TOP 3 EmployeeName, Salary
+FROM Employees
+ORDER BY Salary DESC;
+
+EmployeeName	Salary
+Алексей Лебедев	90000.00
+Пётр Сидоров	72000.00
+Анна Иванова	65000.00
+
+-- топ5сторожил
+SELECT TOP 5 EmployeeName, HireDate
+FROM Employees
+ORDER BY HireDate ASC;
+
+EmployeeName	HireDate
+Алексей Лебедев	2018-05-25
+Пётр Сидоров	2019-07-01
+Анна Иванова	2020-03-15
+Ольга Смирнова	2020-09-05
+Мария Кузнецова	2021-11-20
+
+-- сорт. по отделу + зп
+SELECT EmployeeName, DepartmentId, Salary
+FROM Employees
+ORDER BY DepartmentId ASC, Salary DESC;
+
+EmployeeName	DepartmentId	Salary
+Пётр Сидоров	1	72000.00
+Анна Иванова	1	65000.00
+Мария Кузнецова	1	55000.00
+Иван Петров	1	48000.00
+Ольга Смирнова	2	61000.00
+Дмитрий Орлов	2	58000.00
+Елена Волкова	2	52000.00
+Сергей Морозов	3	45000.00
+Наталья Соколова	3	43000.00
+Алексей Лебедев	4	90000.00
