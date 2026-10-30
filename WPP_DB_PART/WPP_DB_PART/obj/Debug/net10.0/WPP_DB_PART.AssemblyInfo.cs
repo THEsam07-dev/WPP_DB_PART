@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WPP_DB_PART")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f569d467a1caa08d2c44af636ce05a69c25405b8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+34c46a3d2969aec74bdcb2385bc05de91efb2229")]
 [assembly: System.Reflection.AssemblyProductAttribute("WPP_DB_PART")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WPP_DB_PART")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
