@@ -759,3 +759,100 @@ EmployeeName	DepartmentId	Salary	DeptTotalSalary	DeptAvgSalary	DiffFromAvg
 
 ### SQL
 ```sql
+WITH AvgSalary AS (
+    SELECT AVG(Salary) AS AvgSal FROM Employees
+)
+SELECT e.EmployeeName, e.Salary
+FROM Employees e
+CROSS JOIN AvgSalary a
+WHERE e.Salary > a.AvgSal;
+-- task12 через WITH
+EmployeeName	Salary
+Анна Иванова	76500.00
+Алексей Лебедев	95000.00
+Пётр Сидоров	100000.00
+
+WITH DeptAvg AS (
+    SELECT DepartmentId, AVG(Salary) AS AvgSalary
+    FROM Employees
+    GROUP BY DepartmentId
+)
+SELECT TOP 3 d.DepartmentName, ROUND(da.AvgSalary, 2) AS AvgSalary
+FROM DeptAvg da
+JOIN Departments d ON d.DepartmentId = da.DepartmentId
+ORDER BY da.AvgSalary DESC;
+-- топ 3 отдела по AVG зп CTE
+DepartmentName	AvgSalary
+Менеджмент	95000.000000
+Разработка	73700.000000
+Аналитика	58666.670000
+
+## Task 26. CASE: условная логика в SELECT
+
+### SQL
+```sql
+SELECT 
+    EmployeeName, 
+    Salary,    
+    CASE 
+        WHEN Salary > 60000 THEN 'High'
+        WHEN Salary BETWEEN 40000 AND 60000 THEN 'Medium'
+        ELSE 'Low'
+    END AS SalaryLevel,
+    -- оценка зп
+
+    HireDate,    
+    CASE 
+        WHEN YEAR(HireDate) < 2020 THEN 'Senior'
+        WHEN YEAR(HireDate) BETWEEN 2020 AND 2022 THEN 'Mid'
+        ELSE 'Junior'
+    END AS Tenure
+    -- оценка стажа
+FROM Employees;
+--таб
+EmployeeName	Salary	SalaryLevel	HireDate	Tenure
+Анна Иванова	76500.00	High	2023-05-01	Junior
+Пётр Сидоров	100000.00	High	2019-07-01	Senior
+Мария Кузнецова	65500.00	High	2021-11-20	Mid
+Иван Петров	52800.00	Medium	2023-02-10	Junior
+Ольга Смирнова	66000.00	High	2020-09-05	Mid
+Дмитрий Орлов	58000.00	Medium	2022-04-18	Mid
+Елена Волкова	52000.00	Medium	2023-06-01	Junior
+Наталья Соколова	43000.00	Medium	2024-01-15	Junior
+Алексей Лебедев	95000.00	High	2018-05-25	Senior
+
+## Task 27. Работа с датами: DATEADD, DATEDIFF, FORMAT
+
+### SQL
+```sql
+SELECT 
+    EmployeeName, 
+    HireDate,    
+    DATEDIFF(YEAR, HireDate, GETDATE()) AS YearsOfTenure,
+    -- лет стажа
+    
+    DATEDIFF(MONTH, HireDate, GETDATE()) AS MonthsOfTenure,
+    -- кол-во месяцев стажа
+    
+    DATEADD(YEAR, 1, HireDate) AS DateAfterOneYear,
+    -- дата через год после найма
+    
+    FORMAT(HireDate, 'dd.MM.yyyy') AS FormattedHireDate
+    -- формат даты
+FROM Employees;
+--таб
+EmployeeName	HireDate	YearsOfTenure	MonthsOfTenure	DateAfterOneYear	FormattedHireDate
+Анна Иванова	2023-05-01	3	41	2024-05-01	01.05.2023
+Пётр Сидоров	2019-07-01	7	87	2020-07-01	01.07.2019
+Мария Кузнецова	2021-11-20	5	59	2022-11-20	20.11.2021
+Иван Петров	2023-02-10	3	44	2024-02-10	10.02.2023
+Ольга Смирнова	2020-09-05	6	73	2021-09-05	05.09.2020
+Дмитрий Орлов	2022-04-18	4	54	2023-04-18	18.04.2022
+Елена Волкова	2023-06-01	3	40	2024-06-01	01.06.2023
+Наталья Соколова	2024-01-15	2	33	2025-01-15	15.01.2024
+Алексей Лебедев	2018-05-25	8	101	2019-05-25	25.05.2018
+
+## Task 28. C# + SQL: подключение и SELECT
+
+### SQL
+```sql
