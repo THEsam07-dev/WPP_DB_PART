@@ -592,3 +592,170 @@ EmployeeId	EmployeeName	Salary	HireDate	DepartmentId	ManagerId
 --20.4
 SET STATISTICS IO OFF;
 GO
+
+## Task 21. Хранимые процедуры
+
+### SQL
+```sql
+--21.1
+DROP PROCEDURE IF EXISTS sp_GetEmployeesByDepartment;
+DROP PROCEDURE IF EXISTS sp_GetAvgSalaryByDept;
+GO
+-- перестраховка
+
+CREATE PROCEDURE sp_GetEmployeesByDepartment
+    @DeptId INT
+AS
+BEGIN
+    SELECT EmployeeName, Salary, HireDate
+    FROM Employees
+    WHERE DepartmentId = @DeptId;
+END;
+GO
+-- с вход. параметром 
+
+CREATE PROCEDURE sp_GetAvgSalaryByDept
+    @DeptId INT,
+    @AvgSalary DECIMAL(10,2) OUTPUT
+AS
+BEGIN
+    SELECT @AvgSalary = AVG(Salary)
+    FROM Employees
+    WHERE DepartmentId = @DeptId;
+END;
+GO
+-- OUTPUT-параметр
+
+--22.2
+EXEC sp_GetEmployeesByDepartment @DeptId = 1;
+-- вызов 1ой
+EmployeeName	Salary	HireDate
+Анна Иванова	76500.00	2023-05-01
+Пётр Сидоров	100000.00	2019-07-01
+Мария Кузнецова	65500.00	2021-11-20
+Иван Петров	52800.00	2023-02-10
+
+DECLARE @MyAvg DECIMAL(10,2);
+EXEC sp_GetAvgSalaryByDept @DeptId = 1, @AvgSalary = @MyAvg OUTPUT;
+SELECT @MyAvg AS AverageSalary_Dept1;
+-- вызов 2ой
+AverageSalary_Dept1
+73700.00
+
+## Task 22. Функции: скалярная и табличная
+
+### SQL
+```sql
+DROP FUNCTION IF EXISTS fn_GetAnnualSalary;
+DROP FUNCTION IF EXISTS fn_GetEmployeesBySalaryRange;
+GO
+--удаление предидущего задания
+
+CREATE FUNCTION fn_GetAnnualSalary (@MonthlySalary DECIMAL(10,2))
+RETURNS DECIMAL(10,2)
+AS
+BEGIN
+    RETURN @MonthlySalary * 12;
+END;
+GO
+-- скалярная фун-я
+
+CREATE FUNCTION fn_GetEmployeesBySalaryRange (@Min DECIMAL(10,2), @Max DECIMAL(10,2))
+RETURNS TABLE
+AS
+RETURN (
+    SELECT EmployeeName, Salary 
+    FROM Employees 
+    WHERE Salary BETWEEN @Min AND @Max
+);
+GO
+-- табличная фун-я
+
+-- вызов
+
+SELECT EmployeeName, Salary, dbo.fn_GetAnnualSalary(Salary) AS AnnualSalary
+FROM Employees;
+-- скалярная прямо в SELECT
+EmployeeName	Salary	AnnualSalary
+Анна Иванова	76500.00	918000.00
+Пётр Сидоров	100000.00	1200000.00
+Мария Кузнецова	65500.00	786000.00
+Иван Петров	52800.00	633600.00
+Ольга Смирнова	66000.00	792000.00
+Дмитрий Орлов	58000.00	696000.00
+Елена Волкова	52000.00	624000.00
+Наталья Соколова	43000.00	516000.00
+Алексей Лебедев	95000.00	1140000.00
+
+SELECT * FROM dbo.fn_GetEmployeesBySalaryRange(50000, 70000);
+-- Табличная вызывается в FROM
+EmployeeName	Salary
+Мария Кузнецова	65500.00
+Иван Петров	52800.00
+Ольга Смирнова	66000.00
+Дмитрий Орлов	58000.00
+Елена Волкова	52000.00
+
+## Task 23. Оконные функции: ROW_NUMBER, RANK, DENSE_RANK
+
+### SQL
+```sql
+SELECT 
+    EmployeeName, 
+    DepartmentId, 
+    Salary,
+    ROW_NUMBER() OVER (ORDER BY Salary DESC) AS RowNum,
+    -- сквозная нумерация всех сотрудников по убыванию зп
+
+    -- ранжирование внутри отделов.
+    RANK() OVER (PARTITION BY DepartmentId ORDER BY Salary DESC) AS Rnk,
+    -- при равной зп RANK пропускает числа
+    
+    DENSE_RANK() OVER (PARTITION BY DepartmentId ORDER BY Salary DESC) AS DenseRnk
+    -- при равной зарплате DENSE_RANK не пропускает числа
+FROM Employees;
+--таб
+EmployeeName	DepartmentId	Salary	RowNum	Rnk	DenseRnk
+Пётр Сидоров	1	100000.00	1	1	1
+Анна Иванова	1	76500.00	3	2	2
+Мария Кузнецова	1	65500.00	5	3	3
+Иван Петров	1	52800.00	7	4	4
+Ольга Смирнова	2	66000.00	4	1	1
+Дмитрий Орлов	2	58000.00	6	2	2
+Елена Волкова	2	52000.00	8	3	3
+Наталья Соколова	3	43000.00	9	1	1
+Алексей Лебедев	4	95000.00	2	1	1
+
+## Task 24. Оконные агрегаты: SUM OVER, AVG OVER
+
+### SQL
+```sql
+SELECT 
+    EmployeeName, 
+    DepartmentId, 
+    Salary,
+    SUM(Salary) OVER (PARTITION BY DepartmentId) AS DeptTotalSalary,
+    -- cумм зп по отделу
+    
+    AVG(Salary) OVER (PARTITION BY DepartmentId) AS DeptAvgSalary,
+    -- cредняя зарплата по отделу
+    
+    ROUND(Salary - AVG(Salary) OVER (PARTITION BY DepartmentId), 2) AS DiffFromAvg
+    -- отклонение от AVG
+FROM Employees;
+--таб
+EmployeeName	DepartmentId	Salary	DeptTotalSalary	DeptAvgSalary	DiffFromAvg
+Анна Иванова	1	76500.00	294800.00	73700.000000	2800.000000
+Пётр Сидоров	1	100000.00	294800.00	73700.000000	26300.000000
+Мария Кузнецова	1	65500.00	294800.00	73700.000000	-8200.000000
+Иван Петров	1	52800.00	294800.00	73700.000000	-20900.000000
+Ольга Смирнова	2	66000.00	176000.00	58666.666666	7333.330000
+Дмитрий Орлов	2	58000.00	176000.00	58666.666666	-666.670000
+Елена Волкова	2	52000.00	176000.00	58666.666666	-6666.670000
+Наталья Соколова	3	43000.00	43000.00	43000.000000	0.000000
+Алексей Лебедев	4	95000.00	95000.00	95000.000000	0.000000
+
+## Task 25. CTE (Common Table Expressions)
+
+### SQL
+```sql
