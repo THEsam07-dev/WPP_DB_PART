@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "WPP_DB_PART": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "PRACTICE_DB_CONNECTION": "Server=(localdb)\\MSSQLLocalDB;Database=PracticeDB;Trusted_Connection=True;TrustServerCertificate=True;"
+      }
+    }
+  }
+}
