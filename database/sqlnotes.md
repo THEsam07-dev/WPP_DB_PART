@@ -45,7 +45,7 @@ EmployeeId	EmployeeName	Salary	HireDate	DepartmentId	ManagerId
 ## Task 04 — ORDER BY + TOP
 
 ### SQL
-
+```sql
 SELECT TOP 3 EmployeeName, Salary
 FROM Employees
 ORDER BY Salary DESC;
@@ -85,7 +85,7 @@ EmployeeName	DepartmentId	Salary
 ## Task 05 — COUNT, SUM, AVG, MIN и MAX
 
 ### SQL
-
+```sql
 SELECT COUNT(*) AS TotalEmployees FROM Employees;
 -- кол-во сотр.
 TotalEmployees
@@ -110,3 +110,23 @@ SELECT COUNT(*) AS HighPaidCount FROM Employees WHERE Salary > 50000;
 -- кол-во сотр. с зп > 50к
 HighPaidCount
 7
+
+## Task 06 — GROUP BY: статистика по отделам
+
+### SQL
+```sql
+SELECT 
+    DepartmentId,
+    COUNT(*) AS EmployeeCount,
+    ROUND(AVG(Salary), 2) AS AvgSalary,
+    SUM(Salary) AS TotalSalary
+FROM Employees
+GROUP BY DepartmentId
+ORDER BY AvgSalary DESC;
+
+DepartmentId	EmployeeCount	AvgSalary	TotalSalary
+4	1	90000.000000	90000.00
+1	4	60000.000000	240000.00
+2	3	57000.000000	171000.00
+3	2	44000.000000	88000.00
+
