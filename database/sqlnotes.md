@@ -327,7 +327,7 @@ WHERE NOT EXISTS (
 EmployeeName
 Наталья Соколова
 
-## Task 14. EXISTS / NOT EXISTS
+## Task 15. UNION / UNION ALL
 
 ### SQL
 ```sql
@@ -358,3 +358,154 @@ EmployeeName	Salary	HireDate
 Ольга Смирнова	61000.00	2020-09-05
 Сергей Морозов	45000.00	2021-12-12
 Алексей Лебедев	90000.00	2018-05-25
+
+## Task 16. UPDATE: изменение данных
+
+### SQL
+```sql
+--16.1
+SELECT EmployeeId, EmployeeName, DepartmentId, Salary FROM Employees WHERE DepartmentId = 1;
+-- было
+EmployeeId	EmployeeName	DepartmentId	Salary
+1	Анна Иванова	1	65000.00
+2	Пётр Сидоров	1	72000.00
+3	Мария Кузнецова	1	55000.00
+4	Иван Петров	1	48000.00
+
+UPDATE Employees 
+SET Salary = Salary * 1.1 
+WHERE DepartmentId = 1;
+-- refrash
+
+SELECT EmployeeId, EmployeeName, DepartmentId, Salary FROM Employees WHERE DepartmentId = 1;
+-- стало
+EmployeeId	EmployeeName	DepartmentId	Salary
+1	Анна Иванова	1	71500.00
+2	Пётр Сидоров	1	79200.00
+3	Мария Кузнецова	1	60500.00
+4	Иван Петров	1	52800.00
+
+--16.2
+SELECT EmployeeName, HireDate, Salary FROM Employees WHERE HireDate < '2022-01-01';
+-- до
+EmployeeName	HireDate	Salary
+Анна Иванова	2020-03-15	71500.00
+Пётр Сидоров	2019-07-01	79200.00
+Мария Кузнецова	2021-11-20	60500.00
+Ольга Смирнова	2020-09-05	61000.00
+Сергей Морозов	2021-12-12	45000.00
+Алексей Лебедев	2018-05-25	90000.00
+
+UPDATE Employees 
+SET Salary = Salary + 5000 
+WHERE HireDate < '2022-01-01';
+-- refrash
+
+SELECT EmployeeName, HireDate, Salary FROM Employees WHERE HireDate < '2022-01-01';
+-- после
+EmployeeName	HireDate	Salary
+Анна Иванова	2020-03-15	76500.00
+Пётр Сидоров	2019-07-01	84200.00
+Мария Кузнецова	2021-11-20	65500.00
+Ольга Смирнова	2020-09-05	66000.00
+Сергей Морозов	2021-12-12	50000.00
+Алексей Лебедев	2018-05-25	95000.00
+
+--16.3
+SELECT EmployeeId, EmployeeName, HireDate FROM Employees WHERE EmployeeId = 1;
+--до
+EmployeeId	EmployeeName	HireDate
+1	Анна Иванова	2020-03-15
+
+UPDATE Employees 
+SET HireDate = '2023-05-01' 
+WHERE EmployeeId = 1;
+-- refrash
+
+SELECT EmployeeId, EmployeeName, HireDate FROM Employees WHERE EmployeeId = 1;
+-- после
+EmployeeId	EmployeeName	HireDate
+1	Анна Иванова	2023-05-01
+
+## Task 17. DELETE: удаление данных
+
+### SQL
+```sql
+--17.1
+SELECT COUNT(*) FROM EmployeeProjects WHERE Hours = 0;
+-- до
+(Отсутствует имя столбца)
+0
+
+DELETE FROM EmployeeProjects WHERE Hours = 0;
+-- удаляем
+
+SELECT COUNT(*) FROM EmployeeProjects WHERE Hours = 0;
+-- после
+(Отсутствует имя столбца)
+0
+
+--17.2
+SELECT * FROM Employees WHERE EmployeeId = 8;
+-- до
+EmployeeId	EmployeeName	Salary	HireDate	DepartmentId	ManagerId
+8	Сергей Морозов	50000.00	2021-12-12	3	NULL
+
+DELETE FROM EmployeeProjects WHERE EmployeeId = 8;
+-- удаляем назначение
+
+DELETE FROM Employees WHERE EmployeeId = 8;
+-- удаляем сотрудника
+
+SELECT * FROM Employees WHERE EmployeeId = 8;
+-- после
+EmployeeId	EmployeeName	Salary	HireDate	DepartmentId	ManagerId
+
+--17.3
+SELECT * INTO #TestTable FROM Employees;
+-- тест таб.
+
+SELECT COUNT(*) AS BeforeDelete FROM #TestTable;
+-- кол-во строк
+BeforeDelete
+9
+
+DELETE FROM #TestTable;
+-- удаляем все
+
+SELECT COUNT(*) AS AfterDelete FROM #TestTable;
+-- после
+AfterDelete
+0
+
+DROP TABLE #TestTable;
+-- удаляем тест. таб.
+
+## Task 18. Транзакции: BEGIN TRAN / COMMIT / ROLLBACK
+
+### SQL
+```sql
+--18.1
+SELECT EmployeeName, Salary FROM Employees WHERE EmployeeId = 2;
+-- до
+EmployeeName	Salary
+Пётр Сидоров	84200.00
+
+BEGIN TRANSACTION;
+-- транзакция
+
+UPDATE Employees SET Salary = 100000 WHERE EmployeeId = 2;
+-- смена зп
+
+SELECT EmployeeName, Salary FROM Employees WHERE EmployeeId = 2;
+-- чек внутрь транзакции
+EmployeeName	Salary
+Пётр Сидоров	100000.00
+
+ROLLBACK TRANSACTION;
+-- откат
+
+SELECT EmployeeName, Salary FROM Employees WHERE EmployeeId = 2;
+-- после отката
+EmployeeName	Salary
+Пётр Сидоров	84200.00
