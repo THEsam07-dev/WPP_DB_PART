@@ -185,3 +185,48 @@ EmployeeName	DepartmentName	Salary
 Иван Петров	Разработка	48000.00
 Сергей Морозов	Тестирование	45000.00
 Наталья Соколова	Тестирование	43000.00
+
+## Task 09 — LEFT JOIN: сотрудники без проектов
+
+### SQL
+```sql
+SELECT 
+    e.EmployeeId, 
+    e.EmployeeName
+FROM Employees e
+LEFT JOIN EmployeeProjects ep ON ep.EmployeeId = e.EmployeeId
+WHERE ep.EmployeeId IS NULL;
+--белая ворона
+EmployeeId	EmployeeName
+9	Наталья Соколова
+
+## Task 10 — Множественный JOIN: сотрудники, отделы, проекты
+
+### SQL
+```sql
+SELECT 
+    e.EmployeeName, 
+    d.DepartmentName, 
+    p.ProjectName, 
+    ep.Hours
+FROM Employees e
+INNER JOIN Departments d ON d.DepartmentId = e.DepartmentId
+INNER JOIN EmployeeProjects ep ON ep.EmployeeId = e.EmployeeId
+INNER JOIN Projects p ON p.ProjectId = ep.ProjectId
+ORDER BY d.DepartmentName ASC, e.EmployeeName ASC, p.ProjectName ASC;
+-- назначения
+EmployeeName	DepartmentName	ProjectName	Hours
+Дмитрий Орлов	Аналитика	AI Assistant	50
+Дмитрий Орлов	Аналитика	Data Warehouse	70
+Елена Волкова	Аналитика	Mobile App	95
+Ольга Смирнова	Аналитика	Data Warehouse	110
+Алексей Лебедев	Менеджмент	AI Assistant	200
+Алексей Лебедев	Менеджмент	CRM System	30
+Анна Иванова	Разработка	CRM System	120
+Анна Иванова	Разработка	Data Warehouse	80
+Иван Петров	Разработка	Legacy Refactor	40
+Иван Петров	Разработка	Mobile App	90
+Мария Кузнецова	Разработка	Mobile App	100
+Пётр Сидоров	Разработка	AI Assistant	60
+Пётр Сидоров	Разработка	CRM System	150
+Сергей Морозов	Тестирование	Legacy Refactor	130
