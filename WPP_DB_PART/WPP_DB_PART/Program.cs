@@ -16,7 +16,7 @@ namespace WPP_DB_PART
                 return;
             }
 
-            Console.WriteLine("=== ОТЧЕТ ПО ОТДЕЛАМ ===");
+            Console.WriteLine("Отчёт по отделам.");
             await GenerateDepartmentReport(connectionString);
 
             Console.WriteLine("\nНажмите любую клавишу для выхода...");
